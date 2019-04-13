@@ -4,10 +4,10 @@
 #include <BLE2902.h>
 
 // Device Name: Maximum 30 bytes
-#define DEVICE_NAME "LINE Things Trial ESP32"
+#define DEVICE_NAME "PATLAMP"
 
 // User service UUID: Change this to your generated service UUID
-#define USER_SERVICE_UUID "7f2c137a-5139-48c7-aa55-a33f914e376c"
+#define USER_SERVICE_UUID "82b37b0f-8c13-4027-b119-81289977fe69"
 // User service characteristics
 #define WRITE_CHARACTERISTIC_UUID "E9062E71-9E62-4BC6-B0D3-35CDCD9B027B"
 #define NOTIFY_CHARACTERISTIC_UUID "62FBD229-6EDD-4D1A-B554-5C4E1BB29169"
@@ -64,7 +64,7 @@ void setup() {
 
   // Security Settings
   BLESecurity *thingsSecurity = new BLESecurity();
-  thingsSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_ONLY);
+  thingsSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
   thingsSecurity->setCapability(ESP_IO_CAP_NONE);
   thingsSecurity->setInitEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
 
