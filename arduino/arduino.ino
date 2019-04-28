@@ -16,8 +16,13 @@
 #define PSDI_SERVICE_UUID "E625601E-9E55-4597-A598-76018A0D293D"
 #define PSDI_CHARACTERISTIC_UUID "26E2B12B-85F0-4F3F-9FDD-91D114270E6E"
 
-#define BUTTON 0
-#define LED1 2
+#define RELAY 27
+#define PATLAMP 26
+
+#define CHANNEL_0 0
+#define LEDC_TIMER_BIT 10   // PWMの範囲(8bitなら0〜255、10bitなら0〜1023)
+#define LEDC_BASE_FREQ 20000 // 周波数(Hz)
+#define VALUE_MAX 1023      // PWMの最大値
 
 BLEServer* thingsServer;
 BLESecurity *thingsSecurity;
@@ -46,7 +51,7 @@ class writeCallback: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *bleWriteCharacteristic) {
     std::string value = bleWriteCharacteristic->getValue();
     if ((char)value[0] <= 1) {
-      digitalWrite(LED1, (char)value[0]);
+      digitalWrite(RELAY, (char)value[0]);
     }
   }
 };
@@ -54,10 +59,15 @@ class writeCallback: public BLECharacteristicCallbacks {
 void setup() {
   Serial.begin(115200);
 
-  pinMode(LED1, OUTPUT);
-  digitalWrite(LED1, 0);
-  pinMode(BUTTON, INPUT_PULLUP);
-  attachInterrupt(BUTTON, buttonAction, CHANGE);
+  pinMode(PATLAMP, OUTPUT);
+  pinMode(RELAY, OUTPUT);
+  digitalWrite(RELAY, LOW);
+  
+
+  ledcSetup(CHANNEL_0, LEDC_BASE_FREQ, LEDC_TIMER_BIT);
+  ledcAttachPin(PATLAMP, CHANNEL_0);
+  ledcAttachPin(PATLAMP, CHANNEL_0);
+  ledcWrite(CHANNEL_0, 512);
 
   BLEDevice::init("");
   BLEDevice::setEncryptionLevel(ESP_BLE_SEC_ENCRYPT_NO_MITM);
@@ -76,13 +86,12 @@ void setup() {
 void loop() {
   uint8_t btnValue;
 
-  while (btnAction > 0 && deviceConnected) {
-    btnValue = !digitalRead(BUTTON);
-    btnAction = 0;
-    notifyCharacteristic->setValue(&btnValue, 1);
-    notifyCharacteristic->notify();
-    delay(20);
-  }
+  // while (btnAction > 0 && deviceConnected) {
+  //   btnAction = 0;
+  //   notifyCharacteristic->setValue(&btnValue, 1);
+  //   notifyCharacteristic->notify();
+  //   delay(20);
+  // }
   // Disconnection
   if (!deviceConnected && oldDeviceConnected) {
     delay(500); // Wait for BLE Stack to be ready
@@ -137,8 +146,4 @@ void startAdvertising(void) {
   thingsServer->getAdvertising()->addServiceUUID(userService->getUUID());
   thingsServer->getAdvertising()->setScanResponseData(scanResponseData);
   thingsServer->getAdvertising()->start();
-}
-
-void buttonAction() {
-  btnAction++;
 }
