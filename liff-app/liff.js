@@ -37,58 +37,12 @@ function handlerToggleLed() {
 
 function uiToggleLedButton(state) {
     const el = document.getElementById("btn-led-toggle");
-    el.innerText = state ? "Switch LED OFF" : "Switch LED ON";
+    el.innerText = state ? "パトランプOFF" : "パトランプON";
 
     if (state) {
       el.classList.add("led-on");
     } else {
       el.classList.remove("led-on");
-    }
-}
-
-function uiCountPressButton() {
-    clickCount++;
-
-    const el = document.getElementById("click-count");
-    el.innerText = clickCount;
-}
-
-function uiToggleStateButton(pressed) {
-    const el = document.getElementById("btn-state");
-
-    if (pressed) {
-        el.classList.add("pressed");
-        el.innerText = "Pressed";
-    } else {
-        el.classList.remove("pressed");
-        el.innerText = "Released";
-    }
-}
-
-function uiToggleDeviceConnected(connected) {
-    const elStatus = document.getElementById("status");
-    const elControls = document.getElementById("controls");
-
-    elStatus.classList.remove("error");
-
-    if (connected) {
-        // Hide loading animation
-        uiToggleLoadingAnimation(false);
-        // Show status connected
-        elStatus.classList.remove("inactive");
-        elStatus.classList.add("success");
-        elStatus.innerText = "Device connected";
-        // Show controls
-        elControls.classList.remove("hidden");
-    } else {
-        // Show loading animation
-        uiToggleLoadingAnimation(true);
-        // Show status disconnected
-        elStatus.classList.remove("success");
-        elStatus.classList.add("inactive");
-        elStatus.innerText = "Device disconnected";
-        // Hide controls
-        elControls.classList.add("hidden");
     }
 }
 
@@ -106,9 +60,6 @@ function uiToggleLoadingAnimation(isLoading) {
 
 function uiStatusError(message, showLoadingAnimation) {
     uiToggleLoadingAnimation(showLoadingAnimation);
-
-    const elStatus = document.getElementById("status");
-    const elControls = document.getElementById("controls");
 
     // Show status error
     elStatus.classList.remove("success");
@@ -165,8 +116,6 @@ function liffRequestDevice() {
 
 function liffConnectToDevice(device) {
     device.gatt.connect().then(() => {
-        document.getElementById("device-name").innerText = device.name;
-        document.getElementById("device-id").innerText = device.id;
 
         // Show status connected
         uiToggleDeviceConnected(true);
