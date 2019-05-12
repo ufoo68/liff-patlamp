@@ -40,9 +40,36 @@ function uiToggleLedButton(state) {
     el.innerText = state ? "パトランプOFF" : "パトランプON";
 
     if (state) {
-      el.classList.add("led-on");
+      //el.classList.add("led-on");
     } else {
-      el.classList.remove("led-on");
+      //el.classList.remove("led-on");
+    }
+}
+
+function uiToggleDeviceConnected(connected) {
+    const elStatus = document.getElementById("status");
+    const elControls = document.getElementById("controls");
+
+    elStatus.classList.remove("error");
+
+    if (connected) {
+        // Hide loading animation
+        uiToggleLoadingAnimation(false);
+        // Show status connected
+        elStatus.classList.remove("inactive");
+        elStatus.classList.add("success");
+        elStatus.innerText = "Device connected";
+        // Show controls
+        elControls.classList.remove("hidden");
+    } else {
+        // Show loading animation
+        uiToggleLoadingAnimation(true);
+        // Show status disconnected
+        elStatus.classList.remove("success");
+        elStatus.classList.add("inactive");
+        elStatus.innerText = "Device disconnected";
+        // Hide controls
+        elControls.classList.add("hidden");
     }
 }
 
@@ -144,7 +171,6 @@ function liffConnectToDevice(device) {
             ledState = false;
             // Reset UI elements
             uiToggleLedButton(false);
-            uiToggleStateButton(false);
 
             // Try to reconnect
             initializeLiff();
@@ -157,13 +183,6 @@ function liffConnectToDevice(device) {
 }
 
 function liffGetUserService(service) {
-    // Button pressed state
-    service.getCharacteristic(BTN_CHARACTERISTIC_UUID).then(characteristic => {
-        liffGetButtonStateCharacteristic(characteristic);
-    }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
-    });
-
     // Toggle LED
     service.getCharacteristic(LED_CHARACTERISTIC_UUID).then(characteristic => {
         window.ledCharacteristic = characteristic;
@@ -183,31 +202,11 @@ function liffGetPSDIService(service) {
         // Byte array to hex string
         const psdi = new Uint8Array(value.buffer)
             .reduce((output, byte) => output + ("0" + byte.toString(16)).slice(-2), "");
-        document.getElementById("device-psdi").innerText = psdi;
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
 }
 
-function liffGetButtonStateCharacteristic(characteristic) {
-    // Add notification hook for button state
-    // (Get notified when button state changes)
-    characteristic.startNotifications().then(() => {
-        characteristic.addEventListener('characteristicvaluechanged', e => {
-            const val = (new Uint8Array(e.target.value.buffer))[0];
-            if (val > 0) {
-                // press
-                uiToggleStateButton(true);
-            } else {
-                // release
-                uiToggleStateButton(false);
-                uiCountPressButton();
-            }
-        });
-    }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
-    });
-}
 
 function liffToggleDeviceLedState(state) {
     // on: 0x01
