@@ -88,6 +88,9 @@ function uiToggleLoadingAnimation(isLoading) {
 function uiStatusError(message, showLoadingAnimation) {
     uiToggleLoadingAnimation(showLoadingAnimation);
 
+    const elStatus = document.getElementById("status");
+    const elControls = document.getElementById("controls");
+
     // Show status error
     elStatus.classList.remove("success");
     elStatus.classList.remove("inactive");
