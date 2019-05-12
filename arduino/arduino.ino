@@ -22,7 +22,6 @@
 #define CHANNEL_0 0
 #define LEDC_TIMER_BIT 10   // PWMの範囲(8bitなら0〜255、10bitなら0〜1023)
 #define LEDC_BASE_FREQ 20000 // 周波数(Hz)
-#define VALUE_MAX 1023      // PWMの最大値
 
 BLEServer* thingsServer;
 BLESecurity *thingsSecurity;
@@ -66,7 +65,6 @@ void setup() {
 
   ledcSetup(CHANNEL_0, LEDC_BASE_FREQ, LEDC_TIMER_BIT);
   ledcAttachPin(PATLAMP, CHANNEL_0);
-  ledcAttachPin(PATLAMP, CHANNEL_0);
   ledcWrite(CHANNEL_0, 512);
 
   BLEDevice::init("");
@@ -86,13 +84,6 @@ void setup() {
 void loop() {
   uint8_t btnValue;
 
-  // while (btnAction > 0 && deviceConnected) {
-  //   btnAction = 0;
-  //   notifyCharacteristic->setValue(&btnValue, 1);
-  //   notifyCharacteristic->notify();
-  //   delay(20);
-  // }
-  // Disconnection
   if (!deviceConnected && oldDeviceConnected) {
     delay(500); // Wait for BLE Stack to be ready
     thingsServer->startAdvertising(); // Restart advertising
