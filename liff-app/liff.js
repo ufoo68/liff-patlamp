@@ -12,6 +12,9 @@ const PSDI_CHARACTERISTIC_UUID  = '26E2B12B-85F0-4F3F-9FDD-91D114270E6E';
 let ledState = false; // true: LED on, false: LED off
 let clickCount = 0;
 
+const patolampOn = './assets/pato_lamp_on_red.png';
+const patolampOff = './assets/pato_lamp_off_red.png';
+
 // -------------- //
 // On window load //
 // -------------- //
@@ -42,19 +45,16 @@ function uiToggleLedButton(state) {
 
     if (state) {
         el.classList.add("led-on");
-        pt.classList.add("patolamp-on");
-        pt.classList.remove("patolamp-off");
+        pt.src = patolampOn;
     } else {
         el.classList.remove("led-on");
-        pt.classList.add("patolamp-off");
-        pt.classList.remove("patolamp-on");
+        pt.src = patolampOff;
     }
 }
 
 function uiToggleDeviceConnected(connected) {
     const elStatus = document.getElementById("status");
     const elControls = document.getElementById("controls");
-    const pt = document.getElementById("patolamp");
 
     elStatus.classList.remove("error");
 
@@ -67,7 +67,6 @@ function uiToggleDeviceConnected(connected) {
         elStatus.innerText = "Device connected";
         // Show controls
         elControls.classList.remove("hidden");
-        pt.classList.remove("patolamp-on");
     } else {
         // Show loading animation
         uiToggleLoadingAnimation(true);
