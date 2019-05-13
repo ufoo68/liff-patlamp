@@ -37,12 +37,17 @@ function handlerToggleLed() {
 
 function uiToggleLedButton(state) {
     const el = document.getElementById("btn-led-toggle");
+    const pt = document.getElementById("patolamp");
     el.innerText = state ? "パトランプOFF" : "パトランプON";
 
     if (state) {
-      //el.classList.add("led-on");
+        el.classList.add("led-on");
+        pt.classList.add("patolamp-on");
+        pt.classList.remove("patolamp-off");
     } else {
-      //el.classList.remove("led-on");
+        el.classList.remove("led-on");
+        pt.classList.add("patolamp-off");
+        pt.classList.remove("patolamp-on");
     }
 }
 
