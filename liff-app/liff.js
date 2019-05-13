@@ -54,6 +54,7 @@ function uiToggleLedButton(state) {
 function uiToggleDeviceConnected(connected) {
     const elStatus = document.getElementById("status");
     const elControls = document.getElementById("controls");
+    const pt = document.getElementById("patolamp");
 
     elStatus.classList.remove("error");
 
@@ -66,6 +67,7 @@ function uiToggleDeviceConnected(connected) {
         elStatus.innerText = "Device connected";
         // Show controls
         elControls.classList.remove("hidden");
+        pt.classList.remove("patolamp-on");
     } else {
         // Show loading animation
         uiToggleLoadingAnimation(true);
